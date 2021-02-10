@@ -75,7 +75,7 @@
     - name: Add title
       lineinfile:
         insertbefore: BOF
-        line: "{{ org_name }}"
+        line: "{{ org_name }} ,"
         path: "{{ playbook_dir }}/tower-inactive-hosts/reports/inactive_hosts.csv"
 
     - name: Upload latest report
