@@ -10,6 +10,7 @@
     git_url: git@github.com:termlen0/tower-inactive-hosts.git
     git_key: "{{ lookup('file', secret_key) }}"
     git_branch: main
+    tower_password: '{{ lookup("env", "TOWER_PASSWORD") }}'
 
   tasks:
 
