@@ -32,6 +32,9 @@
         name: ansible-git
         tasks_from: pull
 
+    - debug:
+        var: hostvars
+
     - name: Find the org number
       uri:
         url: "{{ tower_host }}/organizations/{{ org_name | regex_replace( '\\W', '%20') }}/"
