@@ -3,8 +3,8 @@
   uri:
     url: "{{ tower_host }}/hosts/?page_size={{ _page_size }}&inventory__organization={{tower_orgs.json.id }}&page={{ page_num }}"
     method: GET
-    user: admin
-    password: "ansible"
+    user: "{{ tower_user_name }}"
+    password: "{{ tower_password }}"
     validate_certs: False
     force_basic_auth: yes
   register: nodes

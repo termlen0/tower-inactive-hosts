@@ -39,7 +39,7 @@
       uri:
         url: "{{ tower_host }}/organizations/{{ org_name | regex_replace( '\\W', '%20') }}/"
         method: GET
-        user: "{{ tower_user }}"
+        user: "{{ tower_user_name }}"
         password: "{{ tower_password }}"
         validate_certs: False
         force_basic_auth: yes
