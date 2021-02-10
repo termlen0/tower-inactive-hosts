@@ -1,0 +1,15 @@
+---
+- name: Gather nodes in the page
+  uri:
+    url: "{{ tower_host }}/hosts/?inventory__organization={{tower_orgs.json.id }}&page={{ page_num }}"
+    method: GET
+    user: admin
+    password: "ansible"
+    validate_certs: False
+    force_basic_auth: yes
+  register: nodes
+
+- name: Gather hosts that are not active
+  template:
+    src: create_report.j2
+    dest: "{{ playbook_dir }}output/fragments/inactive_hosts-{{ page_num }}.csv"

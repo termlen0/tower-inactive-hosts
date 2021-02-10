@@ -1,0 +1,9 @@
+Hostname, Days Inactive
+{% set current_dt = ansible_date_time.date + ' ' + ansible_date_time.time %}
+{% for inventory_item in tower_nodes.json.results %}
+{% if inventory_item.summary_fields.last_job is defined %}
+{% if ((current_dt | to_datetime ) - ( inventory_item.summary_fields.last_job.finished | regex_replace('(\\d{4}-\\d{2}-\\d{2})T(\\d{2}:\\d{2}:\\d{2}).*', '\\1 \\2') | to_datetime )).days > threshold %}
+{{ inventory_item.name }}, {{  ((current_dt | to_datetime ) - ( inventory_item.summary_fields.last_job.finished | regex_replace('(\\d{4}-\\d{2}-\\d{2})T(\\d{2}:\\d{2}:\\d{2}).*', '\\1 \\2') | to_datetime )).days }}
+{% endif %}
+{% endif %}
+{% endfor %}

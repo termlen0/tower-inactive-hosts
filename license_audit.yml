@@ -1,0 +1,80 @@
+---
+- name: Gather unused hosts from tower
+  hosts: localhost
+  gather_facts: yes
+  vars:
+    tower_host: https://localhost/api/v2
+    org_name: REDHAT NETWORK ORGANIZATION
+    _page_size: 10
+    threshold: 5
+
+  tasks:
+
+    - debug:
+        msg: "{{ tower_host }}/organizations/{{ org_name | regex_replace( '\\W', '%20') }}/"
+        verbosity: 1
+
+    - name: Ensure that the required directories are empty
+      file:
+        path: "{{ playbook_dir }}/output"
+        state: absent
+
+    - name: Ensure that the required directories exist
+      file:
+        path: "{{ playbook_dir }}/output/fragments"
+        state: directory
+
+    - name: Find the org number
+      uri:
+        url: "{{ tower_host }}/organizations/{{ org_name | regex_replace( '\\W', '%20') }}/"
+        method: GET
+        user: "{{ tower_user }}"
+        password: "{{ tower_password }}"
+        validate_certs: False
+        force_basic_auth: yes
+      register: tower_orgs
+
+    - name: Find the pagination
+      uri:
+        url: "{{ tower_host }}/hosts/?inventory__organization={{tower_orgs.json.id }}"
+        method: GET
+        user: admin
+        password: "ansible"
+        validate_certs: False
+        force_basic_auth: yes
+      register: tower_nodes
+
+    - name: Calculate the number of pages
+      set_fact:
+        pages: "{{ (tower_nodes.json.count / _page_size) | round(0,'ceil') | int + 1 }}"
+
+    - debug:
+        msg: "{{ pages }}"
+        verbosity: 1
+
+    - name: Iterate over every page to build the fragment reports
+      include_tasks: fragment.yml
+      loop: "{{ range(1 , pages) | list }}"
+      loop_control:
+        loop_var: page_num
+
+    - name: Assemble the fragments
+      assemble:
+        src: "{{ playbook_dir }}/output/fragments"
+        dest: "{{ playbook_dir }}/output/inactive_hosts.csv"
+
+    - name: Add title
+      lineinfile:
+        insertbefore: BOF
+        line: "{{ org_name }}"
+        path: "{{ playbook_dir }}/output/inactive_hosts.csv"
+
+      #   - name: Check if there are more pages
+      #     set_fact:
+      #       next_url: "{{ tower_nodes.json.next }}"
+
+      #   - name: Gather hosts that are not active
+      #     template:
+      #       src: create_report.j2
+      #       dest: output/inactive_hosts.csv
+      # when: next_url != "null"
