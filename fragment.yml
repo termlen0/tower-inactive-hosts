@@ -1,7 +1,7 @@
 ---
 - name: Gather nodes in the page
   uri:
-    url: "{{ tower_host }}/hosts/?inventory__organization={{tower_orgs.json.id }}&page={{ page_num }}"
+    url: "{{ tower_host }}/hosts/?page_size={{ _page_size }}&inventory__organization={{tower_orgs.json.id }}&page={{ page_num }}"
     method: GET
     user: admin
     password: "ansible"
@@ -12,4 +12,4 @@
 - name: Gather hosts that are not active
   template:
     src: create_report.j2
-    dest: "{{ playbook_dir }}output/fragments/inactive_hosts-{{ page_num }}.csv"
+    dest: "{{ playbook_dir }}/tower-inactive-hosts/reports/fragments/inactive_hosts-{{ page_num }}.csv"

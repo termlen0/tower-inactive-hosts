@@ -6,23 +6,31 @@
     tower_host: https://localhost/api/v2
     org_name: REDHAT NETWORK ORGANIZATION
     _page_size: 10
-    threshold: 5
+    threshold: 1
+    git_url: git@github.com:termlen0/tower-inactive-hosts.git
+    git_key: "{{ lookup('file', secret_key) }}"
+    git_branch: main
 
   tasks:
 
-    - debug:
-        msg: "{{ tower_host }}/organizations/{{ org_name | regex_replace( '\\W', '%20') }}/"
-        verbosity: 1
+    # - debug:
+    #     msg: "{{ tower_host }}/organizations/{{ org_name | regex_replace( '\\W', '%20') }}/"
+    #     verbosity: 1
 
-    - name: Ensure that the required directories are empty
-      file:
-        path: "{{ playbook_dir }}/output"
-        state: absent
+    # - name: Ensure that the required directories are empty
+    #   file:
+    #     path: "{{ playbook_dir }}/output"
+    #     state: absent
 
-    - name: Ensure that the required directories exist
-      file:
-        path: "{{ playbook_dir }}/output/fragments"
-        state: directory
+    # - name: Ensure that the required directories exist
+    #   file:
+    #     path: "{{ playbook_dir }}/output/fragments"
+    #     state: directory
+
+    - name: git pull
+      include_role:
+        name: ansible-git
+        tasks_from: pull
 
     - name: Find the org number
       uri:
@@ -54,20 +62,20 @@
 
     - name: Iterate over every page to build the fragment reports
       include_tasks: fragment.yml
-      loop: "{{ range(1 , pages) | list }}"
+      loop: "{{ range(1 , pages | int) | list }}"
       loop_control:
         loop_var: page_num
 
     - name: Assemble the fragments
       assemble:
-        src: "{{ playbook_dir }}/output/fragments"
-        dest: "{{ playbook_dir }}/output/inactive_hosts.csv"
+        src: "{{ playbook_dir }}/tower-inactive-hosts/reports/fragments"
+        dest: "{{ playbook_dir }}/tower-inactive-hosts/reports/inactive_hosts.csv"
 
     - name: Add title
       lineinfile:
         insertbefore: BOF
         line: "{{ org_name }}"
-        path: "{{ playbook_dir }}/output/inactive_hosts.csv"
+        path: "{{ playbook_dir }}/tower-inactive-hosts/reports/inactive_hosts.csv"
 
       #   - name: Check if there are more pages
       #     set_fact:
