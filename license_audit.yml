@@ -77,6 +77,11 @@
         line: "{{ org_name }}"
         path: "{{ playbook_dir }}/tower-inactive-hosts/reports/inactive_hosts.csv"
 
+    - name: Upload latest report
+      include_role:
+        name: ansible-git
+        tasks_from: push
+
       #   - name: Check if there are more pages
       #     set_fact:
       #       next_url: "{{ tower_nodes.json.next }}"
