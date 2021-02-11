@@ -33,6 +33,16 @@
         name: ansible-git
         tasks_from: pull
 
+    - name: remove files
+      file:
+        path: "{{ playbook_dir }}/tower-inactive-hosts/reports/fragments/inactive_hosts*.csv"
+        state: absent
+
+    - name: remove files
+      file:
+        path: "{{ playbook_dir }}/tower-inactive-hosts/reports/inactive_hosts.csv"
+        state: absent
+
     - name: Find the org number
       uri:
         url: "{{ tower_host }}/organizations/{{ org_name | regex_replace( '\\W', '%20') }}/"
