@@ -86,7 +86,7 @@
         line: "{{ item }}"
         path: "{{ playbook_dir }}/tower-inactive-hosts/reports/inactive_hosts.csv"
       loop:
-        - "{{ org_name }}"
+        - "{{ org_name }}, "
         - "Hostname, Days Inactive"
 
     - name: Upload latest report
