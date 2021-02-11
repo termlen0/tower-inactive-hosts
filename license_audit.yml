@@ -72,6 +72,13 @@
         src: "{{ playbook_dir }}/tower-inactive-hosts/reports/fragments"
         dest: "{{ playbook_dir }}/tower-inactive-hosts/reports/inactive_hosts.csv"
 
+    - name: Add Headers
+      lineinfile:
+        insertbefore: BOF
+        line: "Hostname, Days Inactive"
+        path: "{{ playbook_dir }}/tower-inactive-hosts/reports/inactive_hosts.csv"
+
+
     - name: Add title
       lineinfile:
         insertbefore: BOF

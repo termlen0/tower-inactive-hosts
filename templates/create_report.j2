@@ -1,4 +1,3 @@
-Hostname, Days Inactive
 {% set current_dt = ansible_date_time.date + ' ' + ansible_date_time.time %}
 {% for inventory_item in tower_nodes.json.results %}
 {% if inventory_item.summary_fields.last_job is defined %}
