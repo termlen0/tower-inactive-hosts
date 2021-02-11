@@ -81,12 +81,13 @@
         dest: "{{ playbook_dir }}/tower-inactive-hosts/reports/inactive_hosts.csv"
 
     - name: Add title
-      blockinfile:
+      lineinfile:
         insertbefore: BOF
-        block: |
-           "{{ org_name }} ,"
-           Hostname, Days Inactive
+        line: "{{ item }}"
         path: "{{ playbook_dir }}/tower-inactive-hosts/reports/inactive_hosts.csv"
+      loop:
+        - "{{ org_name }}"
+        - "Hostname, Days Inactive"
 
     - name: Upload latest report
       include_role:
