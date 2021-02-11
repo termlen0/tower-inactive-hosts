@@ -34,9 +34,7 @@
         tasks_from: pull
 
     - name: remove files
-      file:
-        path: "{{ playbook_dir }}/tower-inactive-hosts/reports/fragments/inactive_hosts*.csv"
-        state: absent
+      shell: "rm -fr {{ playbook_dir }}/tower-inactive-hosts/reports/fragments/inactive_hosts*.csv"
 
     - name: remove files
       file:
