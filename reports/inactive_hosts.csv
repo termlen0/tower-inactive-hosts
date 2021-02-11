@@ -1,7 +1,5 @@
-# BEGIN ANSIBLE MANAGED BLOCK
-"AWS Team ,"
 Hostname, Days Inactive
-# END ANSIBLE MANAGED BLOCK
+AWS Team
 lab100-vm01, 7
 lab100-vm02, 7
 lab200-vm01, 7
