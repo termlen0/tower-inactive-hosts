@@ -34,11 +34,11 @@
         tasks_from: pull
 
     - name: remove files
-      shell: "rm -fr {{ playbook_dir }}/tower-inactive-hosts/reports/fragments/inactive_hosts*.csv"
+      shell: "rm -fr {{ playbook_dir }}/tower-inactive-hosts/reports/fragments/*.csv"
 
     - name: remove files
       file:
-        path: "{{ playbook_dir }}/tower-inactive-hosts/reports/inactive_hosts.csv"
+        path: "{{ playbook_dir }}/tower-inactive-hosts/reports/{{ org_name }}.csv"
         state: absent
 
     - name: Find the org number
@@ -78,16 +78,13 @@
     - name: Assemble the fragments
       assemble:
         src: "{{ playbook_dir }}/tower-inactive-hosts/reports/fragments"
-        dest: "{{ playbook_dir }}/tower-inactive-hosts/reports/inactive_hosts.csv"
+        dest: "{{ playbook_dir }}/tower-inactive-hosts/reports/{{ org_name }}.csv"
 
     - name: Add title
       lineinfile:
         insertbefore: BOF
-        line: "{{ item }}"
-        path: "{{ playbook_dir }}/tower-inactive-hosts/reports/inactive_hosts.csv"
-      loop:
-        - "{{ org_name }}, "
-        - "Hostname, Days Inactive"
+        line: "Hostname, Days Inactive"
+        path: "{{ playbook_dir }}/tower-inactive-hosts/reports/{{ org_name }}.csv"
 
     - name: Upload latest report
       include_role:

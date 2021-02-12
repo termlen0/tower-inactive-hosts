@@ -12,4 +12,4 @@
 - name: Gather hosts that are not active
   template:
     src: create_report.j2
-    dest: "{{ playbook_dir }}/tower-inactive-hosts/reports/fragments/inactive_hosts-{{ page_num }}.csv"
+    dest: "{{ playbook_dir }}/tower-inactive-hosts/reports/fragments/{{ org_name }}-{{ page_num }}.csv"
